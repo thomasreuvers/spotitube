@@ -1,20 +1,18 @@
 package org.spotitube.Api.Resource;
 
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 import org.spotitube.Domain.Model.LoginModel;
-import org.spotitube.Domain.Service.IUserService;
+import org.spotitube.Domain.Service.UserService;
+
 import javax.inject.Inject;
+import javax.ws.rs.*;
 
 @Path("user")
-public class UserResource {
+public class UserResource extends BaseResource {
 
     @Inject
-    private IUserService _userService;
+    private UserService userService;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
     public void login(LoginModel model) {
     }
@@ -22,12 +20,13 @@ public class UserResource {
     @GET
     @Path("/calculate")
     public int calculate() {
-        return _userService.calculate(5, 2);
+        return userService.calculate(5, 2);
     }
 
     @GET
     @Path("/ping")
     public String ping() {
-        return "Pong!";
+        userService.registerUser();
+        return "registered!";
     }
 }

@@ -1,25 +1,46 @@
 package org.spotitube.Data.Mapper;
 
+import org.spotitube.Data.Entity.User;
+
+import javax.enterprise.context.RequestScoped;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
-public class UserMapperImpl implements IBaseMapper {
+@RequestScoped
+public class UserMapperImpl extends BaseMapperImpl<User> {
     @Override
-    public <T> Optional<T> find(int id) {
+    public Optional<User> find(int id) {
         return Optional.empty();
     }
 
     @Override
-    public <T> void insert(T t) {
+    public void insert(User user) {
+        Connection x = initializeConnection();
+        try {
+            Statement s = x.createStatement();
+            String sql = "CREATE TABLE REGISTRATION " +
+                    "(id INTEGER not NULL, " +
+                    " first VARCHAR(255), " +
+                    " last VARCHAR(255), " +
+                    " age INTEGER, " +
+                    " PRIMARY KEY ( id ))";
+
+            s.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
-    public <T> void update(T t) {
+    public  void update(User t) {
 
     }
 
     @Override
-    public <T> void delete(T t) {
+    public  void delete(User t) {
 
     }
 }
