@@ -1,7 +1,10 @@
 package org.spotitube.Domain.Service;
 
-
-import org.spotitube.Data.Mapper.UserMapperImpl;
+import org.spotitube.Data.Entity.User;
+import org.spotitube.Data.Mapper.User.UserMapper;
+import org.spotitube.Domain.Exception.AuthenticationException;
+import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.RegisterModel;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -10,13 +13,30 @@ import javax.inject.Inject;
 public class UserServiceImpl implements UserService {
 
     @Inject
-    private UserMapperImpl userMapper;
+    private UserMapper userMapper;
 
-    public int calculate(int number, int number2) {
-        return number + number2;
+    @Inject
+    private TokenService tokenService;
+
+
+    @Override
+    public User loginUser(LoginModel model) {
+        if (!userMapper.findByUsername(model.getUsername()).isPresent()) {
+            throw new AuthenticationException("User does not exist!");
+        }
+
+        User user = userMapper.findByUsername(model.getUsername()).get();
+
+        if(user.getUsername().equals(model.getUsername()) && user.getPassword().equals(model.getPassword()))
+        {
+            return user;
+        }else{
+            throw new AuthenticationException("Invalid Username/Password!");
+        }
     }
 
-    public void registerUser() {
-        userMapper.insert(null);
+    @Override
+    public void registerUser(RegisterModel model) {
+        userMapper.insert(model.asUserEntity(model));
     }
 }

@@ -4,6 +4,9 @@ public class LoginModel {
     private String Username;
     private String Password;
 
+    public LoginModel(String username, String password) {
+    }
+
     public String getUsername() {
         return Username;
     }

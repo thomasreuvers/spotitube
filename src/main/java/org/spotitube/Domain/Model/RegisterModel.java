@@ -1,14 +1,10 @@
-package org.spotitube.Data.Entity;
+package org.spotitube.Domain.Model;
 
-public class User extends BaseEntity {
+import org.spotitube.Data.Entity.User;
+
+public class RegisterModel {
     private String Username;
     private String Password;
-    private String Token;
-
-    public User(String username, String password, String token) {
-        this.Username = username;
-        this.Password = password;
-    }
 
     public String getUsername() {
         return Username;
@@ -26,11 +22,7 @@ public class User extends BaseEntity {
         Password = password;
     }
 
-    public String getToken() {
-        return Token;
-    }
-
-    public void setToken(String token) {
-        Token = token;
+    public User asUserEntity(RegisterModel model){
+        return new User(model.getUsername(), model.getPassword(), null);
     }
 }
