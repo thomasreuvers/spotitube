@@ -29,6 +29,22 @@ public class UserResourceTest {
     }
 
 
+//    @Test
+//    public void testLogin_Successful() {
+//        // Arrange
+//        LoginModel loginModel = new LoginModel("thomas", "test123!");
+//        User expectedUser = new User(loginModel.getUsername(), loginModel.getPassword(), null);
+//        when(userService.loginUser(loginModel)).thenReturn(expectedUser);
+//
+//        // Act
+//        Response response = userResource.login(loginModel);
+//
+//        // Assert
+//        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+//        assertEquals(expectedUser, response.getEntity());
+//        verify(userService, times(1)).loginUser(loginModel);
+//    }
+
     @Test
     public void testLogin_Successful() {
         // Arrange

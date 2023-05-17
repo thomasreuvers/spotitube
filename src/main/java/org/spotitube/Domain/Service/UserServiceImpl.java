@@ -1,6 +1,7 @@
 package org.spotitube.Domain.Service;
 
 import org.spotitube.Data.Entity.User;
+import org.spotitube.Data.Mapper.User.IUserDao;
 import org.spotitube.Data.Mapper.User.UserMapper;
 import org.spotitube.Domain.Exception.AuthenticationException;
 import org.spotitube.Domain.Model.LoginModel;
@@ -13,7 +14,7 @@ import javax.inject.Inject;
 public class UserServiceImpl implements UserService {
 
     @Inject
-    private UserMapper userMapper;
+    private IUserDao userMapper;
 
     @Inject
     private TokenService tokenService;
@@ -37,6 +38,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(RegisterModel model) {
-        userMapper.insert(model.asUserEntity(model));
+//        userMapper.insert(model.asUserEntity(model));
     }
 }
