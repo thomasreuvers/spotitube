@@ -1,28 +1,26 @@
 package org.spotitube.Api.Resource;
 
-import org.spotitube.Data.Entity.User;
 import org.spotitube.Domain.Exception.AuthenticationException;
-import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.LoginRequest;
+import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
 import org.spotitube.Domain.Service.UserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("user")
-public class UserResource {
+public class UserResource extends BaseResource {
 
     @Inject
     private UserService userService;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/login")
-    public Response login(LoginModel model) {
+    public Response login(LoginRequest model) {
         try {
-            User user = userService.loginUser(model);
+            LoginResponse user = userService.loginUser(model);
             return Response.ok(user).build();
         }catch(AuthenticationException ex){
             return Response.status(Response.Status.BAD_REQUEST)
@@ -36,7 +34,6 @@ public class UserResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/register")
     public Response register(RegisterModel model) {
         try {

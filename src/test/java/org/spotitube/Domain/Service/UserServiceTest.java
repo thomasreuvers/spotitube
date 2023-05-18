@@ -2,13 +2,11 @@ package org.spotitube.Domain.Service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.spotitube.Api.Resource.UserResource;
 import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.User.IUserDao;
-import org.spotitube.Data.Mapper.User.UserMapper;
-import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.LoginRequest;
+import org.spotitube.Domain.Model.LoginResponse;
 
-import javax.ws.rs.core.Response;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
@@ -39,17 +37,17 @@ public class UserServiceTest {
     @Test
     public void testLoginUser() {
         // Arrange
-        LoginModel loginModel = new LoginModel("thomas", "test123!");
-        User expectedUser = new User(loginModel.getUsername(), loginModel.getPassword(), null);
-        when(userMapper.findByUsername(loginModel.getUsername())).thenReturn(Optional.of(expectedUser));
+        LoginRequest loginRequest = new LoginRequest("thomas", "test123!");
+        User expectedUser = new User(loginRequest.getUser(), loginRequest.getPassword(), null);
+        when(userMapper.findByUsername(loginRequest.getUser())).thenReturn(Optional.of(expectedUser));
 
         // Act
-        User user = userService.loginUser(loginModel);
+        LoginResponse response = userService.loginUser(loginRequest);
 
         // Assert
-        assertNotNull(user);
-        assertEquals(loginModel.getUsername(), user.getUsername());
-        assertEquals(loginModel.getPassword(), user.getPassword());
-        verify(userMapper, times(1)).findByUsername(loginModel.getUsername());
+        assertNotNull(response);
+        assertEquals(loginRequest.getUser(), expectedUser.getUsername());
+        assertEquals(loginRequest.getPassword(), expectedUser.getPassword());
+        verify(userMapper, times(1)).findByUsername(loginRequest.getUser());
     }
 }

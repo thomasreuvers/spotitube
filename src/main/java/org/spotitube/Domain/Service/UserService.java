@@ -1,10 +1,10 @@
 package org.spotitube.Domain.Service;
 
-import org.spotitube.Data.Entity.User;
-import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.LoginRequest;
+import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
 
 public interface UserService {
-    User loginUser(LoginModel model);
+    LoginResponse loginUser(LoginRequest model);
     void registerUser(RegisterModel model);
 }

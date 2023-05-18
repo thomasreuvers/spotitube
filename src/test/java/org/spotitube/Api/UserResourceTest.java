@@ -3,8 +3,8 @@ package org.spotitube.Api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.spotitube.Api.Resource.UserResource;
-import org.spotitube.Data.Entity.User;
-import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.LoginRequest;
+import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Service.UserService;
 
 import javax.ws.rs.core.Response;
@@ -48,17 +48,17 @@ public class UserResourceTest {
     @Test
     public void testLogin_Successful() {
         // Arrange
-        LoginModel loginModel = new LoginModel("thomas", "test123!");
-        User expectedUser = new User(loginModel.getUsername(), loginModel.getPassword(), null);
-        when(userService.loginUser(loginModel)).thenReturn(expectedUser);
+        LoginRequest loginRequest = new LoginRequest("thomas", "test123!");
+        LoginResponse expectedResponse = new LoginResponse("", loginRequest.getUser());
+        when(userService.loginUser(loginRequest)).thenReturn(expectedResponse);
 
         // Act
-        Response response = userResource.login(loginModel);
+        Response response = userResource.login(loginRequest);
 
         // Assert
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals(expectedUser, response.getEntity());
-        verify(userService, times(1)).loginUser(loginModel);
+        assertEquals(expectedResponse, response.getEntity());
+        verify(userService, times(1)).loginUser(loginRequest);
     }
 
 //    @Test

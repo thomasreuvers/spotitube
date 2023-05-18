@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
-public abstract class BaseMapper<T> implements IBaseMapper<T> {
+public abstract class BaseMapper {
 
     // Initialize Connection
     protected Connection getConnection() {

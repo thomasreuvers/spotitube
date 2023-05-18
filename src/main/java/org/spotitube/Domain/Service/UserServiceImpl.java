@@ -2,9 +2,9 @@ package org.spotitube.Domain.Service;
 
 import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.User.IUserDao;
-import org.spotitube.Data.Mapper.User.UserMapper;
 import org.spotitube.Domain.Exception.AuthenticationException;
-import org.spotitube.Domain.Model.LoginModel;
+import org.spotitube.Domain.Model.LoginRequest;
+import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
 
 import javax.enterprise.context.RequestScoped;
@@ -14,23 +14,30 @@ import javax.inject.Inject;
 public class UserServiceImpl implements UserService {
 
     @Inject
-    private IUserDao userMapper;
+    private IUserDao<User> userMapper;
 
     @Inject
     private TokenService tokenService;
 
 
     @Override
-    public User loginUser(LoginModel model) {
-        if (!userMapper.findByUsername(model.getUsername()).isPresent()) {
+    public LoginResponse loginUser(LoginRequest model) {
+        if (!userMapper.findByUsername(model.getUser()).isPresent()) {
             throw new AuthenticationException("User does not exist!");
         }
 
-        User user = userMapper.findByUsername(model.getUsername()).get();
+        User user = userMapper.findByUsername(model.getUser()).get();
 
-        if(user.getUsername().equals(model.getUsername()) && user.getPassword().equals(model.getPassword()))
+        if(user.getUsername().equals(model.getUser()) && user.getPassword().equals(model.getPassword()))
         {
-            return user;
+            // Generate token
+            String token = tokenService.GenerateToken();
+
+            // Update user in db with new token
+            user.setToken(token);
+            userMapper.update(user);
+
+            return new LoginResponse(token, user.getUsername());
         }else{
             throw new AuthenticationException("Invalid Username/Password!");
         }
@@ -38,6 +45,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(RegisterModel model) {
-//        userMapper.insert(model.asUserEntity(model));
+        userMapper.insert(model.asUserEntity(model));
     }
 }

@@ -5,9 +5,15 @@ public class User extends BaseEntity {
     private String Password;
     private String Token;
 
+    public User(String username, String password) {
+        this.Username = username;
+        this.Password = password;
+    }
+
     public User(String username, String password, String token) {
         this.Username = username;
         this.Password = password;
+        this.Token = token;
     }
 
     public String getUsername() {
