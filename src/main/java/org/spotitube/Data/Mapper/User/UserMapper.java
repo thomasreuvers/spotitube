@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Optional;
 
 @RequestScoped
-public class UserMapper extends BaseMapper implements IUserDao<User> {
+public class UserMapper extends BaseMapper implements IUserDAO<User> {
 
     public UserMapper() {
         super();
@@ -53,7 +53,7 @@ public class UserMapper extends BaseMapper implements IUserDao<User> {
 
         try(
                 Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql);
+                PreparedStatement stmt = conn.prepareStatement(sql)
                 ) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());

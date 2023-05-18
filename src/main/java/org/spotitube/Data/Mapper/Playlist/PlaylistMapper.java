@@ -1,0 +1,80 @@
+package org.spotitube.Data.Mapper.Playlist;
+
+import org.spotitube.Data.Entity.Playlist;
+import org.spotitube.Data.Entity.Track;
+import org.spotitube.Data.Mapper.BaseMapper;
+import org.spotitube.Data.Mapper.Track.ITrackDAO;
+
+import javax.inject.Inject;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class PlaylistMapper extends BaseMapper implements IPlaylistDAO<Playlist>{
+
+    @Inject
+    private ITrackDAO<Track> trackMapper;
+
+    public PlaylistMapper() {
+        super();
+    }
+
+    @Override
+    public List<Playlist> AllPlaylists() {
+       List<Playlist> playlists = new ArrayList<>();
+
+       String query = "SELECT * FROM playlists";
+
+       try(
+               Connection conn = getConnection();
+               Statement stmt = conn.createStatement()
+               ){
+           ResultSet resultSet = stmt.executeQuery(query);
+
+           while (resultSet.next()) {
+               Playlist playlist = new Playlist();
+
+               // Set the properties of the playlist
+               playlist.setId(resultSet.getInt("id"));
+               playlist.setName(resultSet.getString("name"));
+               playlist.setOwner(resultSet.getBoolean("owner"));
+
+               // Fetch tracks associated with the playlist
+               List<Track> tracks = trackMapper.getTracksByPlaylistId(playlist.getId());
+               playlist.setTracks(tracks);
+
+               // Add the playlist to the list
+               playlists.add(playlist);
+           }
+
+       } catch (SQLException e) {
+           e.printStackTrace(); // Handle or log the exception as per your needs
+       }
+
+       return playlists;
+    }
+
+    @Override
+    public Optional<Playlist> find(int id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void insert(Playlist playlist) {
+
+    }
+
+    @Override
+    public void update(Playlist playlist) {
+
+    }
+
+    @Override
+    public void delete(Playlist playlist) {
+
+    }
+}

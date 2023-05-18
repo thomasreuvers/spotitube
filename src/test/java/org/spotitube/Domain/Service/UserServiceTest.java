@@ -3,7 +3,7 @@ package org.spotitube.Domain.Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.spotitube.Data.Entity.User;
-import org.spotitube.Data.Mapper.User.IUserDao;
+import org.spotitube.Data.Mapper.User.IUserDAO;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
 
@@ -15,13 +15,13 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 public class UserServiceTest {
-    private IUserDao userMapper;
+    private IUserDAO userMapper;
     private TokenService tokenService;
     private UserService userService;
 
     @BeforeEach
     public void setUp() throws Exception {
-        userMapper = mock(IUserDao.class);
+        userMapper = mock(IUserDAO.class);
         tokenService = mock(TokenService.class);
         userService = new UserServiceImpl();
 

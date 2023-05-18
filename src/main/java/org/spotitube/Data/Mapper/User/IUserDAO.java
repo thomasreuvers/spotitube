@@ -5,6 +5,6 @@ import org.spotitube.Data.Mapper.IBaseMapper;
 
 import java.util.Optional;
 
-public interface IUserDao<T> extends IBaseMapper<T> {
+public interface IUserDAO<T> extends IBaseMapper<T> {
     Optional<User> findByUsername(String username);
 }
