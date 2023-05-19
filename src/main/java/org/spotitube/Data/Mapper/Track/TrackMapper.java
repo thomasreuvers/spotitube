@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,7 @@ public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
                 track.setDuration(resultSet.getInt("duration"));
                 track.setAlbum(resultSet.getString("album"));
                 track.setPlayCount(resultSet.getInt("playcount"));
-                track.setPublicationDate(resultSet.getDate("publicationDate"));
+                track.setPublicationDate(LocalDate.parse(resultSet.getDate("publicationDate").toString()));
                 track.setDescription(resultSet.getString("description"));
                 track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
 
@@ -77,7 +78,7 @@ public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
     }
 
     @Override
-    public void delete(Track track) {
+    public void delete(int id) {
 
     }
 }

@@ -6,10 +6,7 @@ import org.spotitube.Data.Mapper.BaseMapper;
 import org.spotitube.Data.Mapper.Track.ITrackDAO;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +71,19 @@ public class PlaylistMapper extends BaseMapper implements IPlaylistDAO<Playlist>
     }
 
     @Override
-    public void delete(Playlist playlist) {
+    public void delete(int id) {
+        String query = "DELETE FROM playlists WHERE id = ?"; // TODO: REMOVE JOINTABLE?
 
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+                )
+        {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+        catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -48,6 +48,34 @@ public class UserMapper extends BaseMapper implements IUserDAO<User> {
     }
 
     @Override
+    public Optional<User> findByToken(String token) {
+        String sql = "SELECT * FROM users WHERE token=?";
+
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, token);
+            ResultSet rs = stmt.executeQuery();
+
+            User u = null;
+            if (rs.next()) {
+                u = new User(rs.getString("username"), rs.getString("password"), rs.getString("token"));
+                u.setId(rs.getInt("id"));
+            }
+
+            if (u != null && u.getToken().contains(token)){
+                return Optional.of(u);
+            } else {
+                return Optional.empty();
+            }
+
+        }catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void insert(User user) {
         String sql = "INSERT INTO users(username, password) VALUES(?,?)";
 
@@ -112,7 +140,7 @@ public class UserMapper extends BaseMapper implements IUserDAO<User> {
     }
 
     @Override
-    public void delete(User t) {
+    public void delete(int id) {
 
     }
 }

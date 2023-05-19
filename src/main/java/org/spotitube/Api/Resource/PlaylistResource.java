@@ -1,15 +1,13 @@
 package org.spotitube.Api.Resource;
 
-import org.spotitube.Data.Entity.Playlist;
-import org.spotitube.Domain.Exception.AuthenticationException;
-import org.spotitube.Domain.Model.LoginResponse;
+import org.spotitube.Api.Annotation.RequireToken;
+import org.spotitube.Domain.Model.AllPlaylistResponse;
 import org.spotitube.Domain.Service.PlaylistService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("playlist")
 public class PlaylistResource extends BaseResource {
@@ -18,10 +16,11 @@ public class PlaylistResource extends BaseResource {
     private PlaylistService playlistService;
 
     @GET
-    public Response GetPlaylists() {
+    @RequireToken
+    public Response GetPlaylists(@QueryParam("token") String token) {
         try {
-            List<Playlist> playlists = playlistService.getAllPlaylists();
-            return Response.ok(playlists).build();
+            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(ex.getMessage())
@@ -41,9 +40,18 @@ public class PlaylistResource extends BaseResource {
         return null;
     }
 
+    //Spotitube/playlist?id={id}
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response DeletePlaylist() {
-        return null;
+    public Response DeletePlaylist(@QueryParam("id") int id) {
+        try{
+            playlistService.deletePlaylist(id);
+            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            return Response.ok(response).build();
+        }catch(Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
+        }
     }
 }

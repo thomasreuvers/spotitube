@@ -1,8 +1,6 @@
 package org.spotitube.Data.Entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Track extends BaseEntity {
     private String Title;
@@ -12,8 +10,7 @@ public class Track extends BaseEntity {
     private String Album;
     private int PlayCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date PublicationDate;
+    private LocalDate PublicationDate;
     private String Description;
     private boolean OfflineAvailable;
 
@@ -57,11 +54,11 @@ public class Track extends BaseEntity {
         PlayCount = playCount;
     }
 
-    public Date getPublicationDate() {
+    public LocalDate getPublicationDate() {
         return PublicationDate;
     }
 
-    public void setPublicationDate(Date publicationDate) {
+    public void setPublicationDate(LocalDate publicationDate) {
         PublicationDate = publicationDate;
     }
 

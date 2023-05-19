@@ -1,10 +1,10 @@
 package org.spotitube.Domain.Service;
 
-import org.spotitube.Data.Entity.Playlist;
-
-import java.util.List;
+import org.spotitube.Domain.Model.AllPlaylistResponse;
 
 public interface PlaylistService {
 
-    List<Playlist> getAllPlaylists();
+    AllPlaylistResponse getAllPlaylists();
+
+    void deletePlaylist(int playlistId);
 }
