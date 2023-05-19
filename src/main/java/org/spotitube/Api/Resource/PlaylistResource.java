@@ -35,7 +35,8 @@ public class PlaylistResource extends BaseResource {
     }
 
     @POST
-    public Response AddNewPlaylist(Playlist playlist) {
+    @RequireToken
+    public Response AddNewPlaylist(@QueryParam("token") String token, Playlist playlist) {
         try {
             playlistService.addPlaylist(playlist);
             AllPlaylistResponse response = playlistService.getAllPlaylists();
@@ -48,7 +49,8 @@ public class PlaylistResource extends BaseResource {
     }
 
     @PUT
-    public Response EditPlaylist(Playlist playlist) {
+    @RequireToken
+    public Response EditPlaylist(@QueryParam("token") String token, Playlist playlist) {
         try {
             playlistService.updatePlaylist(playlist);
             AllPlaylistResponse response = playlistService.getAllPlaylists();
@@ -62,7 +64,8 @@ public class PlaylistResource extends BaseResource {
 
     //Spotitube/playlist?id={id}
     @DELETE
-    public Response DeletePlaylist(@QueryParam("id") int id) {
+    @RequireToken
+    public Response DeletePlaylist(@QueryParam("id") int id, @QueryParam("token") String token) {
         try{
             playlistService.deletePlaylist(id);
             AllPlaylistResponse response = playlistService.getAllPlaylists();
@@ -76,7 +79,8 @@ public class PlaylistResource extends BaseResource {
 
     @GET
     @Path("{id}/tracks")
-    public Response getPlaylistTracks(@PathParam("id") int id) {
+    @RequireToken
+    public Response getPlaylistTracks(@PathParam("id") int id, @QueryParam("token") String token) {
         try{
             TracksResponse response = trackService.getTracksByPlaylistId(id);
             return Response.ok(response).build();
@@ -89,7 +93,8 @@ public class PlaylistResource extends BaseResource {
 
     @GET
     @Path("/tracks")
-    public Response getAvailableTracks(@QueryParam("forPlaylist") int forPlaylist) {
+    @RequireToken
+    public Response getAvailableTracks(@QueryParam("forPlaylist") int forPlaylist, @QueryParam("token") String token) {
         try{
             TracksResponse response = trackService.getAllAvailableTracksByPlaylistId(forPlaylist);
             return Response.ok(response).build();
@@ -103,7 +108,8 @@ public class PlaylistResource extends BaseResource {
 
     @POST
     @Path("{id}/tracks")
-    public Response addTrackToPlaylist(@PathParam("id") int id, Track track) {
+    @RequireToken
+    public Response addTrackToPlaylist(@PathParam("id") int id, Track track, @QueryParam("token") String token) {
         try{
             trackService.addTrackToPlaylist(track, id);
             TracksResponse response = trackService.getTracksByPlaylistId(id);
