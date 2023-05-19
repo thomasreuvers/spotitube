@@ -45,8 +45,16 @@ public class PlaylistResource extends BaseResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response EditPlaylist() {
-        return null;
+    public Response EditPlaylist(Playlist playlist) {
+        try {
+            playlistService.updatePlaylist(playlist);
+            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            return Response.ok(response).build();
+        }catch(Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
+        }
     }
 
     //Spotitube/playlist?id={id}

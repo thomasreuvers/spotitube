@@ -28,9 +28,15 @@ public class PlaylistServiceImpl implements PlaylistService{
         playlistMapper.delete(playlistId);
     }
 
+    // TODO: CREATE VIEWMODELS
     @Override
     public void addPlaylist(Playlist playlist) {
         playlistMapper.insert(playlist);
+    }
+
+    @Override
+    public void updatePlaylist(Playlist playlist) {
+        playlistMapper.update(playlist);
     }
 
     private int calculateTotalPlayTime(List<Playlist> playlists) {

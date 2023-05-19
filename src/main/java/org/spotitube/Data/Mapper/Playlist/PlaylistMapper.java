@@ -80,7 +80,22 @@ public class PlaylistMapper extends BaseMapper implements IPlaylistDAO<Playlist>
 
     @Override
     public void update(Playlist playlist) {
+        String query = "UPDATE playlists SET name=?, owner=? WHERE id=?";
 
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+                ){
+
+            stmt.setString(1, playlist.getName());
+            stmt.setBoolean(2, playlist.getOwner());
+            stmt.setInt(3, playlist.getId());
+
+            stmt.executeUpdate();
+
+        }catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

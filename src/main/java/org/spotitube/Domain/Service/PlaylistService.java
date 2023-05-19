@@ -10,4 +10,6 @@ public interface PlaylistService {
     void deletePlaylist(int playlistId);
 
     void addPlaylist(Playlist playlist);
+
+    void updatePlaylist(Playlist playlist);
 }
