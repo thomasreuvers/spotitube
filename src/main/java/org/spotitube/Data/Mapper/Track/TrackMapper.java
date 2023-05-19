@@ -111,6 +111,24 @@ public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
         return Optional.empty();
     }
 
+    @Override
+    public void addToPlaylist(Track track, int playlistId) {
+        String query = "INSERT INTO playlistTracks (track, playlist) VALUES (?,?)";
+
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ){
+            stmt.setInt(1, track.getId());
+            stmt.setInt(2, playlistId);
+
+            stmt.executeQuery();
+
+        }catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private Track resultSetToTrack(ResultSet resultSet) throws SQLException {
         Track track = new Track();
 

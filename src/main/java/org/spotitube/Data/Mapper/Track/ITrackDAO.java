@@ -10,5 +10,7 @@ public interface ITrackDAO<T> extends IBaseMapper<T> {
     List<T> getAllTracksByPlaylistId(int playlistId);
     List<Track> getAllAvailableTracksByPlaylistId(int playlistId);
 
+    void addToPlaylist(Track track, int playlistId);
+
     Optional<T> getTrack(int trackId);
 }

@@ -26,4 +26,9 @@ public class TrackServiceImpl implements TrackService {
         response.setTracks(trackMapper.getAllAvailableTracksByPlaylistId(PlaylistId));
         return response;
     }
+
+    @Override
+    public void addTrackToPlaylist(Track track, int playlistId) {
+        trackMapper.addToPlaylist(track, playlistId);
+    }
 }
