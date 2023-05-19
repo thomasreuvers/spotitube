@@ -1,6 +1,7 @@
 package org.spotitube.Api.Resource;
 
 import org.spotitube.Api.Annotation.RequireToken;
+import org.spotitube.Data.Entity.Playlist;
 import org.spotitube.Domain.Model.AllPlaylistResponse;
 import org.spotitube.Domain.Service.PlaylistService;
 
@@ -30,8 +31,16 @@ public class PlaylistResource extends BaseResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response AddNewPlaylist() {
-        return null;
+    public Response AddNewPlaylist(Playlist playlist) {
+        try {
+            playlistService.addPlaylist(playlist);
+            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            return Response.ok(response).build();
+        }catch(Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
+        }
     }
 
     @PUT

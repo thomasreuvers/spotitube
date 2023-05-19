@@ -28,6 +28,11 @@ public class PlaylistServiceImpl implements PlaylistService{
         playlistMapper.delete(playlistId);
     }
 
+    @Override
+    public void addPlaylist(Playlist playlist) {
+        playlistMapper.insert(playlist);
+    }
+
     private int calculateTotalPlayTime(List<Playlist> playlists) {
         int totalPlaytime = 0;
 

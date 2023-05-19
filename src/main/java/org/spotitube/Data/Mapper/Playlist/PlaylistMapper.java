@@ -62,7 +62,20 @@ public class PlaylistMapper extends BaseMapper implements IPlaylistDAO<Playlist>
 
     @Override
     public void insert(Playlist playlist) {
+        String query = "INSERT INTO playlists(name, owner) VALUES(?,?)";
 
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+                ){
+            stmt.setString(1, playlist.getName());
+            stmt.setBoolean(2, playlist.getOwner());
+
+            stmt.executeUpdate();
+
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
 
     @Override
