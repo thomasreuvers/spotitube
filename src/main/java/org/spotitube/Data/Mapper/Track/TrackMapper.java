@@ -20,7 +20,7 @@ public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
     }
 
     @Override
-    public List<Track> getTracksByPlaylistId(int playlistId) {
+    public List<Track> getAllTracksByPlaylistId(int playlistId) {
         List<Track> tracks = new ArrayList<>();
 
         String query = "SELECT tracks.id, tracks.title, tracks.performer,\n" +
@@ -35,6 +35,38 @@ public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
                 PreparedStatement stmt = conn.prepareStatement(query)
                 ){
             stmt.setInt(1, playlistId);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                Track track = resultSetToTrack(resultSet);
+
+                // Add track to the Track-list
+                tracks.add(track);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception as per your needs
+        }
+
+        return tracks;
+    }
+
+    @Override
+    public List<Track> getAllAvailableTracksByPlaylistId(int playlistId) {
+        List<Track> tracks = new ArrayList<>();
+
+        String query = "SELECT tracks.id, tracks.title, tracks.performer,\n" +
+                "        tracks.duration, tracks.album, tracks.playcount,\n" +
+                "        tracks.publicationDate, tracks.description, tracks.offlineAvailable\n" +
+                "FROM tracks \n" +
+                "LEFT JOIN playlistTracks ON tracks.id = playlistTracks.track \n" +
+                "WHERE playlistTracks.playlist IS NULL";
+
+        try(
+                Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+        ){
 
             ResultSet resultSet = stmt.executeQuery();
 

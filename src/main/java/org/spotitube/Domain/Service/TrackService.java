@@ -1,7 +1,9 @@
 package org.spotitube.Domain.Service;
 
-import org.spotitube.Domain.Model.TracksInPlaylistResponse;
+import org.spotitube.Domain.Model.TracksResponse;
 
 public interface TrackService {
-    TracksInPlaylistResponse getTracksByPlaylistId(int playlistId);
+    TracksResponse getTracksByPlaylistId(int playlistId);
+
+    TracksResponse getAllAvailableTracksByPlaylistId(int PlaylistId);
 }

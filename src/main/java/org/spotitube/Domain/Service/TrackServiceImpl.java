@@ -2,7 +2,7 @@ package org.spotitube.Domain.Service;
 
 import org.spotitube.Data.Entity.Track;
 import org.spotitube.Data.Mapper.Track.ITrackDAO;
-import org.spotitube.Domain.Model.TracksInPlaylistResponse;
+import org.spotitube.Domain.Model.TracksResponse;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -14,9 +14,16 @@ public class TrackServiceImpl implements TrackService {
     private ITrackDAO<Track> trackMapper;
 
     @Override
-    public TracksInPlaylistResponse getTracksByPlaylistId(int playlistId) {
-        TracksInPlaylistResponse response = new TracksInPlaylistResponse();
-        response.setTracks(trackMapper.getTracksByPlaylistId(playlistId));
+    public TracksResponse getTracksByPlaylistId(int playlistId) {
+        TracksResponse response = new TracksResponse();
+        response.setTracks(trackMapper.getAllTracksByPlaylistId(playlistId));
+        return response;
+    }
+
+    @Override
+    public TracksResponse getAllAvailableTracksByPlaylistId(int PlaylistId) {
+        TracksResponse response = new TracksResponse();
+        response.setTracks(trackMapper.getAllAvailableTracksByPlaylistId(PlaylistId));
         return response;
     }
 }

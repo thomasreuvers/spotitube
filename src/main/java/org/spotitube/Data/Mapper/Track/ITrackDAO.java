@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ITrackDAO<T> extends IBaseMapper<T> {
-    List<T> getTracksByPlaylistId(int playlistId);
+    List<T> getAllTracksByPlaylistId(int playlistId);
+    List<Track> getAllAvailableTracksByPlaylistId(int playlistId);
 
     Optional<T> getTrack(int trackId);
 }

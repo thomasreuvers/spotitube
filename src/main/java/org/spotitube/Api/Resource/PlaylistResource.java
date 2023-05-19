@@ -3,7 +3,7 @@ package org.spotitube.Api.Resource;
 import org.spotitube.Api.Annotation.RequireToken;
 import org.spotitube.Data.Entity.Playlist;
 import org.spotitube.Domain.Model.AllPlaylistResponse;
-import org.spotitube.Domain.Model.TracksInPlaylistResponse;
+import org.spotitube.Domain.Model.TracksResponse;
 import org.spotitube.Domain.Service.PlaylistService;
 import org.spotitube.Domain.Service.TrackService;
 
@@ -77,7 +77,20 @@ public class PlaylistResource extends BaseResource {
     @Path("{id}/tracks")
     public Response getPlaylistTracks(@PathParam("id") int id) {
         try{
-            TracksInPlaylistResponse response = trackService.getTracksByPlaylistId(id);
+            TracksResponse response = trackService.getTracksByPlaylistId(id);
+            return Response.ok(response).build();
+        }catch(Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/tracks")
+    public Response getAvailableTracks(@QueryParam("forPlaylist") int forPlaylist) {
+        try{
+            TracksResponse response = trackService.getAllAvailableTracksByPlaylistId(forPlaylist);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

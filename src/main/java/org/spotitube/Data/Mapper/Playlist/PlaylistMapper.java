@@ -41,7 +41,7 @@ public class PlaylistMapper extends BaseMapper implements IPlaylistDAO<Playlist>
                playlist.setOwner(resultSet.getBoolean("owner"));
 
                // Fetch tracks associated with the playlist
-               List<Track> tracks = trackMapper.getTracksByPlaylistId(playlist.getId());
+               List<Track> tracks = trackMapper.getAllTracksByPlaylistId(playlist.getId());
                playlist.setTracks(tracks);
 
                // Add the playlist to the list

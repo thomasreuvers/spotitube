@@ -4,7 +4,7 @@ import org.spotitube.Data.Entity.Track;
 
 import java.util.List;
 
-public class TracksInPlaylistResponse {
+public class TracksResponse {
     private List<Track> tracks;
 
     public List<Track> getTracks() {
