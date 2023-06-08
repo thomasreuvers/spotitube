@@ -3,29 +3,29 @@ package org.spotitube.Api.Resource;
 import org.spotitube.Api.Annotation.RequireToken;
 import org.spotitube.Data.Entity.Playlist;
 import org.spotitube.Data.Entity.Track;
-import org.spotitube.Domain.Model.AllPlaylistResponse;
+import org.spotitube.Domain.Model.PlaylistResponse;
 import org.spotitube.Domain.Model.TracksResponse;
-import org.spotitube.Domain.Service.PlaylistService;
-import org.spotitube.Domain.Service.TrackService;
+import org.spotitube.Domain.Service.Playlist.IPlaylistService;
+import org.spotitube.Domain.Service.Track.ITrackService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-@Path("playlist")
-public class PlaylistResource extends BaseResource {
+@Path("playlists")
+public class PlaylistController extends BaseController {
 
     @Inject
-    private PlaylistService playlistService;
+    private IPlaylistService playlistService;
 
     @Inject
-    private TrackService trackService;
+    private ITrackService trackService;
 
     @GET
     @RequireToken
     public Response GetPlaylists(@QueryParam("token") String token) {
         try {
-            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            PlaylistResponse response = playlistService.allPlaylists(token);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -38,8 +38,8 @@ public class PlaylistResource extends BaseResource {
     @RequireToken
     public Response AddNewPlaylist(@QueryParam("token") String token, Playlist playlist) {
         try {
-            playlistService.addPlaylist(playlist);
-            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            playlistService.addPlaylist(playlist, token);
+            PlaylistResponse response = playlistService.allPlaylists(token);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -49,11 +49,12 @@ public class PlaylistResource extends BaseResource {
     }
 
     @PUT
+    @Path("{id}")
     @RequireToken
-    public Response EditPlaylist(@QueryParam("token") String token, Playlist playlist) {
+    public Response EditPlaylist(@PathParam("id") int id, @QueryParam("token") String token, Playlist playlist) {
         try {
-            playlistService.updatePlaylist(playlist);
-            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            playlistService.updatePlaylist(id, playlist);
+            PlaylistResponse response = playlistService.allPlaylists(token);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -62,13 +63,13 @@ public class PlaylistResource extends BaseResource {
         }
     }
 
-    //Spotitube/playlist?id={id}
     @DELETE
+    @Path("{id}")
     @RequireToken
-    public Response DeletePlaylist(@QueryParam("id") int id, @QueryParam("token") String token) {
+    public Response DeletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         try{
             playlistService.deletePlaylist(id);
-            AllPlaylistResponse response = playlistService.getAllPlaylists();
+            PlaylistResponse response = playlistService.allPlaylists(token);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -82,7 +83,7 @@ public class PlaylistResource extends BaseResource {
     @RequireToken
     public Response getPlaylistTracks(@PathParam("id") int id, @QueryParam("token") String token) {
         try{
-            TracksResponse response = trackService.getTracksByPlaylistId(id);
+            TracksResponse response = trackService.allTracksInPlaylist(id);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -90,29 +91,29 @@ public class PlaylistResource extends BaseResource {
                     .build();
         }
     }
-
-    @GET
-    @Path("/tracks")
-    @RequireToken
-    public Response getAvailableTracks(@QueryParam("forPlaylist") int forPlaylist, @QueryParam("token") String token) {
-        try{
-            TracksResponse response = trackService.getAllAvailableTracksByPlaylistId(forPlaylist);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
-    }
-
 
     @POST
     @Path("{id}/tracks")
     @RequireToken
     public Response addTrackToPlaylist(@PathParam("id") int id, Track track, @QueryParam("token") String token) {
         try{
-            trackService.addTrackToPlaylist(track, id);
-            TracksResponse response = trackService.getTracksByPlaylistId(id);
+            trackService.addToPlaylist(track, id);
+            TracksResponse response = trackService.allTracksInPlaylist(id);
+            return Response.ok(response).build();
+        }catch(Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage())
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("{id}/tracks/{trackId}")
+    @RequireToken
+    public Response deleteTrackFromPlaylist(@PathParam("id") int id, @PathParam("trackId")int trackId, @QueryParam("token") String token) {
+        try{
+            trackService.deleteFromPlaylist(id, trackId);
+            TracksResponse response = trackService.allTracksInPlaylist(id);
             return Response.ok(response).build();
         }catch(Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

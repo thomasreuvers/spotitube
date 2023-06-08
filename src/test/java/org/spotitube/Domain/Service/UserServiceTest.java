@@ -3,9 +3,12 @@ package org.spotitube.Domain.Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.spotitube.Data.Entity.User;
-import org.spotitube.Data.Mapper.User.IUserDAO;
+import org.spotitube.Data.Mapper.User.IUserMapper;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
+import org.spotitube.Domain.Service.Token.ITokenService;
+import org.spotitube.Domain.Service.User.IUserService;
+import org.spotitube.Domain.Service.User.UserService;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -15,23 +18,23 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 public class UserServiceTest {
-    private IUserDAO userMapper;
-    private TokenService tokenService;
-    private UserService userService;
+    private IUserMapper userMapper;
+    private ITokenService ITokenService;
+    private IUserService IUserService;
 
     @BeforeEach
     public void setUp() throws Exception {
-        userMapper = mock(IUserDAO.class);
-        tokenService = mock(TokenService.class);
-        userService = new UserServiceImpl();
+        userMapper = mock(IUserMapper.class);
+        ITokenService = mock(ITokenService.class);
+        IUserService = new UserService();
 
-        Field userMapperField = UserServiceImpl.class.getDeclaredField("userMapper");
+        Field userMapperField = UserService.class.getDeclaredField("userMapper");
         userMapperField.setAccessible(true);
-        userMapperField.set(userService, userMapper);
+        userMapperField.set(IUserService, userMapper);
 
-        Field tokenServiceField = UserServiceImpl.class.getDeclaredField("tokenService");
+        Field tokenServiceField = UserService.class.getDeclaredField("tokenService");
         tokenServiceField.setAccessible(true);
-        tokenServiceField.set(userService, tokenService);
+        tokenServiceField.set(IUserService, ITokenService);
     }
 
     @Test
@@ -42,7 +45,7 @@ public class UserServiceTest {
         when(userMapper.findByUsername(loginRequest.getUser())).thenReturn(Optional.of(expectedUser));
 
         // Act
-        LoginResponse response = userService.loginUser(loginRequest);
+        LoginResponse response = IUserService.loginUser(loginRequest);
 
         // Assert
         assertNotNull(response);

@@ -4,23 +4,22 @@ import org.spotitube.Domain.Exception.AuthenticationException;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
-import org.spotitube.Domain.Service.UserService;
+import org.spotitube.Domain.Service.User.IUserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-@Path("user")
-public class UserResource extends BaseResource {
+public class UserController extends BaseController {
 
     @Inject
-    private UserService userService;
+    private IUserService IUserService;
 
     @POST
     @Path("/login")
     public Response login(LoginRequest model) {
         try {
-            LoginResponse user = userService.loginUser(model);
+            LoginResponse user = IUserService.loginUser(model);
             return Response.ok(user).build();
         }catch(AuthenticationException ex){
             return Response.status(Response.Status.BAD_REQUEST)
@@ -37,7 +36,7 @@ public class UserResource extends BaseResource {
     @Path("/register")
     public Response register(RegisterModel model) {
         try {
-            userService.registerUser(model);
+            IUserService.registerUser(model);
         }catch(Exception ex) {
             return Response.status(
                     Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()

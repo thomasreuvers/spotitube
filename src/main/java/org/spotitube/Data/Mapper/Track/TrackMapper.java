@@ -1,168 +1,51 @@
 package org.spotitube.Data.Mapper.Track;
 
-import oracle.ucp.proxy.annotation.Pre;
 import org.spotitube.Data.Entity.Track;
 import org.spotitube.Data.Mapper.BaseMapper;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-public class TrackMapper extends BaseMapper implements ITrackDAO<Track> {
+public class TrackMapper extends BaseMapper<Track> implements ITrackMapper {
 
     public TrackMapper(){
         super();
     }
 
     @Override
-    public List<Track> getAllTracksByPlaylistId(int playlistId) {
-        List<Track> tracks = new ArrayList<>();
-
+    public List<Track> allTracksInPlaylist(int playlistId) {
         String query = "SELECT tracks.id, tracks.title, tracks.performer,\n" +
                 "        tracks.duration, tracks.album, tracks.playcount,\n" +
                 "        tracks.publicationDate, tracks.description, tracks.offlineAvailable\n" +
                 "FROM tracks \n" +
-                "JOIN playlistTracks ON tracks.id = playlistTracks.track \n" +
-                "WHERE playlistTracks.playlist = ?";
-
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)
-                ){
-            stmt.setInt(1, playlistId);
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                Track track = resultSetToTrack(resultSet);
-
-                // Add track to the Track-list
-                tracks.add(track);
-            }
-
-        }catch (SQLException e) {
-            e.printStackTrace(); // Handle or log the exception as per your needs
-        }
-
-        return tracks;
+                "JOIN playlistTracks ON tracks.id = playlistTracks.trackId \n" +
+                "WHERE playlistTracks.playlistId = ?";
+        List<Track> tracksInPlaylist = all(query, List.of(playlistId));
+        return tracksInPlaylist;
     }
 
     @Override
-    public List<Track> getAllAvailableTracksByPlaylistId(int playlistId) {
-        List<Track> tracks = new ArrayList<>();
-
-        String query = "SELECT tracks.id, tracks.title, tracks.performer,\n" +
-                "        tracks.duration, tracks.album, tracks.playcount,\n" +
-                "        tracks.publicationDate, tracks.description, tracks.offlineAvailable\n" +
-                "FROM tracks \n" +
-                "LEFT JOIN playlistTracks ON tracks.id = playlistTracks.track \n" +
-                "WHERE playlistTracks.playlist IS NULL";
-
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)
-        ){
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            while (resultSet.next()) {
-                Track track = resultSetToTrack(resultSet);
-
-                // Add track to the Track-list
-                tracks.add(track);
-            }
-
-        }catch (SQLException e) {
-            e.printStackTrace(); // Handle or log the exception as per your needs
-        }
-
-        return tracks;
+    public List<Track> allAvailableTracks(int playlistId) {
+        String query = "SELECT t.*\n" +
+                "FROM tracks t\n" +
+                "LEFT JOIN playlistTracks pt ON t.id = pt.trackId AND pt.playlistId = ?\n" +
+                "WHERE pt.playlistId IS NULL;";
+        return all(query, Arrays.asList(playlistId));
     }
 
     @Override
-    public Optional<Track> getTrack(int trackId) {
-        String query = "SELECT * FROM tracks WHERE trackId=?";
-
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)
-                ){
-            stmt.setInt(1, trackId);
-
-            ResultSet resultSet = stmt.executeQuery();
-
-            // Check if resultset is empty
-            if (!resultSet.isBeforeFirst() && resultSet.getRow() == 0){
-                return Optional.empty();
-            }
-
-            Track track = resultSetToTrack(resultSet);
-            return Optional.of(track);
-
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }
-
-        return Optional.empty();
+    public void deleteFromPlaylist(int playlistId, int id) {
+        String query = "DELETE FROM playlistTracks WHERE trackId=? AND playlistId=?";
+        save(query, Arrays.asList(id, playlistId));
     }
 
     @Override
-    public void addToPlaylist(Track track, int playlistId) {
-        String query = "INSERT INTO playlistTracks (track, playlist) VALUES (?,?)";
+    public void addToPlaylist(int id, int playlistId, boolean offlineAvailable) {
+        String query = "INSERT INTO playlistTracks (trackId, playlistId) VALUES (?,?)";
+        save(query, Arrays.asList(id, playlistId));
 
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query);
-                ){
-            stmt.setInt(1, track.getId());
-            stmt.setInt(2, playlistId);
-
-            stmt.executeQuery();
-
-        }catch(SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private Track resultSetToTrack(ResultSet resultSet) throws SQLException {
-        Track track = new Track();
-
-        // Set track properties
-        track.setId(resultSet.getInt("id"));
-        track.setTitle(resultSet.getString("title"));
-        track.setPerformer(resultSet.getString("performer"));
-        track.setDuration(resultSet.getInt("duration"));
-        track.setAlbum(resultSet.getString("album"));
-        track.setPlayCount(resultSet.getInt("playcount"));
-        track.setPublicationDate(LocalDate.parse(resultSet.getDate("publicationDate").toString()));
-        track.setDescription(resultSet.getString("description"));
-        track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
-
-        return track;
-    }
-
-    @Override
-    public Optional<Track> find(int id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void insert(Track track) {
-
-    }
-
-    @Override
-    public void update(Track track) {
-
-    }
-
-    @Override
-    public void delete(int id) {
-
+        // Update offline availability
+        String query2 = "UPDATE tracks SET offlineAvailable=? WHERE id=?";
+        save(query2, Arrays.asList(offlineAvailable, id));
     }
 }

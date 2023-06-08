@@ -1,23 +1,25 @@
-package org.spotitube.Domain.Service;
+package org.spotitube.Domain.Service.User;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.spotitube.Data.Entity.User;
-import org.spotitube.Data.Mapper.User.IUserDAO;
+import org.spotitube.Data.Mapper.User.IUserMapper;
 import org.spotitube.Domain.Exception.AuthenticationException;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
+import org.spotitube.Domain.Service.Token.ITokenService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 @RequestScoped
-public class UserServiceImpl implements UserService {
+public class UserService implements IUserService {
 
     @Inject
-    private IUserDAO<User> userMapper;
+    private IUserMapper userMapper;
 
     @Inject
-    private TokenService tokenService;
+    private ITokenService ITokenService;
 
 
     @Override
@@ -28,14 +30,13 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.findByUsername(model.getUser()).get();
 
-        if(user.getUsername().equals(model.getUser()) && user.getPassword().equals(model.getPassword()))
+        if(user.getUsername().equals(model.getUser()) && DigestUtils.sha256Hex(model.getPassword()).equals(user.getPassword()))
         {
             // Generate token
-            String token = tokenService.GenerateToken();
+            String token = ITokenService.GenerateToken();
 
             // Update user in db with new token
-            user.setToken(token);
-            userMapper.update(user);
+            userMapper.updateToken(user.getId(), token);
 
             return new LoginResponse(token, user.getUsername());
         }else{
@@ -45,6 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(RegisterModel model) {
-        userMapper.insert(model.asUserEntity(model));
+        userMapper.newUser(model.asUserEntity(model));
     }
 }

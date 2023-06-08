@@ -1,17 +1,16 @@
-package org.spotitube.Domain.Service;
+package org.spotitube.Domain.Service.Token;
 
-import org.spotitube.Data.Entity.User;
-import org.spotitube.Data.Mapper.User.IUserDAO;
+import org.spotitube.Data.Mapper.User.IUserMapper;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.UUID;
 
 @RequestScoped
-public class TokenServiceImpl implements TokenService {
+public class TokenService implements ITokenService {
 
     @Inject
-    private IUserDAO<User> userMapper;
+    private IUserMapper userMapper;
 
     @Override
     public String GenerateToken() {

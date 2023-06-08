@@ -1,12 +1,9 @@
 package org.spotitube.Data.Entity;
 
-import java.util.List;
 
 public class Playlist extends BaseEntity {
     private String Name;
-    private Boolean Owner;
-
-    private List<Track> Tracks;
+    private int UserId;
 
     public String getName() {
         return Name;
@@ -16,19 +13,12 @@ public class Playlist extends BaseEntity {
         Name = name;
     }
 
-    public Boolean getOwner() {
-        return Owner;
+
+    public int getUserId() {
+        return UserId;
     }
 
-    public void setOwner(Boolean owner) {
-        Owner = owner;
-    }
-
-    public List<Track> getTracks() {
-        return Tracks;
-    }
-
-    public void setTracks(List<Track> tracks) {
-        Tracks = tracks;
+    public void setUserId(int userId) {
+        UserId = userId;
     }
 }

@@ -8,11 +8,14 @@ public class Track extends BaseEntity {
     private int Duration;
 
     private String Album;
-    private int PlayCount;
+
+    private int Playcount;
 
     private LocalDate PublicationDate;
     private String Description;
+
     private boolean OfflineAvailable;
+
 
     public String getTitle() {
         return Title;
@@ -46,12 +49,12 @@ public class Track extends BaseEntity {
         Album = album;
     }
 
-    public int getPlayCount() {
-        return PlayCount;
+    public int getPlaycount() {
+        return Playcount;
     }
 
-    public void setPlayCount(int playCount) {
-        PlayCount = playCount;
+    public void setPlaycount(int playcount) {
+        Playcount = playcount;
     }
 
     public LocalDate getPublicationDate() {

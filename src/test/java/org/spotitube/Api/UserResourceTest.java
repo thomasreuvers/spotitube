@@ -2,10 +2,10 @@ package org.spotitube.Api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.spotitube.Api.Resource.UserResource;
+import org.spotitube.Api.Resource.UserController;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
-import org.spotitube.Domain.Service.UserService;
+import org.spotitube.Domain.Service.User.IUserService;
 
 import javax.ws.rs.core.Response;
 
@@ -15,17 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class UserResourceTest {
-    private UserResource userResource;
-    private UserService userService;
+    private UserController userResource;
+    private IUserService IUserService;
 
     @BeforeEach
     public void setUp() throws Exception {
-        userService = mock(UserService.class);
-        userResource = new UserResource();
+        IUserService = mock(IUserService.class);
+        userResource = new UserController();
 
-        Field userServiceField = UserResource.class.getDeclaredField("userService");
+        Field userServiceField = UserController.class.getDeclaredField("userService");
         userServiceField.setAccessible(true);
-        userServiceField.set(userResource, userService);
+        userServiceField.set(userResource, IUserService);
     }
 
 
@@ -50,7 +50,7 @@ public class UserResourceTest {
         // Arrange
         LoginRequest loginRequest = new LoginRequest("thomas", "test123!");
         LoginResponse expectedResponse = new LoginResponse("", loginRequest.getUser());
-        when(userService.loginUser(loginRequest)).thenReturn(expectedResponse);
+        when(IUserService.loginUser(loginRequest)).thenReturn(expectedResponse);
 
         // Act
         Response response = userResource.login(loginRequest);
@@ -58,7 +58,7 @@ public class UserResourceTest {
         // Assert
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(expectedResponse, response.getEntity());
-        verify(userService, times(1)).loginUser(loginRequest);
+        verify(IUserService, times(1)).loginUser(loginRequest);
     }
 
 //    @Test

@@ -1,7 +1,7 @@
 package org.spotitube.Api.Filter;
 
 import org.spotitube.Api.Annotation.RequireToken;
-import org.spotitube.Domain.Service.TokenService;
+import org.spotitube.Domain.Service.Token.ITokenService;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -11,7 +11,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 @Provider
@@ -22,7 +21,7 @@ public class TokenFilter implements ContainerRequestFilter {
     private ResourceInfo resourceInfo;
 
     @Inject
-    private TokenService tokenService;
+    private ITokenService ITokenService;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -39,6 +38,6 @@ public class TokenFilter implements ContainerRequestFilter {
 
     private boolean isValidToken(String token) {
         if (token == null) return false;
-        return tokenService.validateToken(token);
+        return ITokenService.validateToken(token);
     }
 }
