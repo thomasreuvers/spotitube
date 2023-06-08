@@ -24,7 +24,7 @@ public class PlaylistMapper extends BaseMapper<Playlist> implements IPlaylistMap
 
     @Override
     public void newPlaylist(Playlist playlist, int userId) {
-        String query = "INSERT INTO playlists(name, userId) VALUES (?, ?)";
+        String query = "INSERT INTO playlists(name, userId) VALUES(?,?)";
         save(query, Arrays.asList(playlist.getName(), userId));
     }
 

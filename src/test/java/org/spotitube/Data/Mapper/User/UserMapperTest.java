@@ -102,12 +102,11 @@ class UserMapperTest {
 
         // Verify the interactions and assertions
         verify(connectionMock).prepareStatement("INSERT INTO users(username, password) VALUES(?,?)");
-        verify(statementMock).setString(1, "testuser");
-        verify(statementMock).setString(2, DigestUtils.sha256Hex("password123"));
+        verify(statementMock).setObject(1, "testuser");
+        verify(statementMock).setObject(2, DigestUtils.sha256Hex("password123"));
         verify(statementMock).executeUpdate();
     }
 
-    // FIXME: THIS ERRORS
     @Test
     void testUpdateToken() throws SQLException {
         // Invoke the updateToken method
@@ -115,10 +114,8 @@ class UserMapperTest {
 
         // Verify the interactions and assertions
         verify(connectionMock).prepareStatement("UPDATE users SET token=? WHERE id=?");
-        verify(statementMock).setString(1, "token123");
-        verify(statementMock).setInt(2, 1);
+        verify(statementMock).setObject(1, "token123");
+        verify(statementMock).setObject(2, 1);
         verify(statementMock).executeUpdate();
-
-        // Additional assertions can be made depending on the expected behavior
     }
 }
