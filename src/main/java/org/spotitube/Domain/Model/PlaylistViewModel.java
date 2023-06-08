@@ -10,6 +10,16 @@ public class PlaylistViewModel {
     private boolean Owner;
     private List<Track> Tracks;
 
+    public PlaylistViewModel() {
+
+    }
+    public PlaylistViewModel(int id, String name, boolean owner, List<Track> tracks) {
+        this.id = id;
+        Name = name;
+        Owner = owner;
+        Tracks = tracks;
+    }
+
     public int getId() {
         return id;
     }

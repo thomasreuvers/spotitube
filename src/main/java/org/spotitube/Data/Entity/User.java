@@ -5,12 +5,22 @@ public class User extends BaseEntity {
     private String Password;
     private String Token;
 
+    public User(){
+    }
+
     public User(String username, String password) {
         this.Username = username;
         this.Password = password;
     }
 
     public User(String username, String password, String token) {
+        this.Username = username;
+        this.Password = password;
+        this.Token = token;
+    }
+
+    public User(int id, String username, String password, String token) {
+        this.Id = id;
         this.Username = username;
         this.Password = password;
         this.Token = token;

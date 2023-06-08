@@ -1,23 +1,19 @@
 package org.spotitube.Data.Mapper.Playlist;
 
+import org.spotitube.Data.Context.IConnectionContext;
 import org.spotitube.Data.Entity.Playlist;
-import org.spotitube.Data.Entity.Track;
-import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.BaseMapper;
-import org.spotitube.Data.Mapper.Track.ITrackMapper;
-import org.spotitube.Data.Mapper.User.IUserMapper;
 
 import javax.inject.Inject;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class PlaylistMapper extends BaseMapper<Playlist> implements IPlaylistMapper {
 
-    public PlaylistMapper() {
-        super();
+    @Inject
+    public PlaylistMapper(IConnectionContext context) {
+        super(context);
     }
 
     @Override
@@ -42,11 +38,11 @@ public class PlaylistMapper extends BaseMapper<Playlist> implements IPlaylistMap
     public void deletePlaylist(int id) {
         deletePlaylistTrackEntry(id);
         String query = "DELETE FROM playlists WHERE id=?";
-        save(query, Arrays.asList(id));
+        save(query, List.of(id));
     }
 
     private void deletePlaylistTrackEntry(int id) {
         String query = "DELETE FROM playlistTracks WHERE playlistId=?";
-        save(query, Arrays.asList(id));
+        save(query, List.of(id));
     }
 }

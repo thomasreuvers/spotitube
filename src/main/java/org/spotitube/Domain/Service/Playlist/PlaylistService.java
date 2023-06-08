@@ -47,9 +47,9 @@ public class PlaylistService implements IPlaylistService {
             List<Track> tracks = trackMapper.allTracksInPlaylist(playlist.getId());
             playlistViewModel.setTracks(tracks);
 
+            User user = userMapper.findByToken(token);
             // Check if current logged-in user is the owner of the playlist
-            if(userMapper.findByToken(token).isPresent()) {
-                User user = userMapper.findByToken(token).get();
+            if(user != null) {
                 playlistViewModel.setOwner(user.getId() == playlist.getUserId());
             }else {
                 playlistViewModel.setOwner(false);
@@ -70,10 +70,12 @@ public class PlaylistService implements IPlaylistService {
 
     @Override
     public void addPlaylist(Playlist playlist, String token) {
-        if (!userMapper.findByToken(token).isPresent()) {
+        User user = userMapper.findByToken(token);
+
+        if (user == null) {
             throw new RuntimeException("User does with given token does not exist!");
         }
-        User user = userMapper.findByToken(token).get();
+
         playlistMapper.newPlaylist(playlist, user.getId());
     }
 

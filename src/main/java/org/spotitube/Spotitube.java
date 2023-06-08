@@ -1,9 +1,9 @@
 package org.spotitube;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.spotitube.Api.Resource.PlaylistController;
-import org.spotitube.Api.Resource.TrackController;
-import org.spotitube.Api.Resource.UserController;
+import org.spotitube.Api.Controller.PlaylistController;
+import org.spotitube.Api.Controller.TrackController;
+import org.spotitube.Api.Controller.UserController;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;

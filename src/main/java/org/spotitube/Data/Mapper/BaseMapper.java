@@ -1,50 +1,25 @@
 package org.spotitube.Data.Mapper;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import org.spotitube.Data.Context.IConnectionContext;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class BaseMapper<T> implements IBaseMapper<T> {
+    private final IConnectionContext context;
 
-    // Initialize Connection
-    protected Connection getConnection() {
-        Properties properties = new Properties();
-        Connection connection;
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream("db.properties"));
-            Class.forName(properties.getProperty("driver.class.name"));
-
-            SQLServerDataSource dataSource = new SQLServerDataSource();
-            dataSource.setUser(properties.getProperty("db.username"));
-            dataSource.setPassword(properties.getProperty("db.password"));
-            dataSource.setServerName(properties.getProperty("db.serverName"));
-            dataSource.setPortNumber(Integer.parseInt(properties.getProperty("db.portNumber")));
-            dataSource.setDatabaseName(properties.getProperty("db.databaseName"));
-            dataSource.setTrustServerCertificate(true);
-
-            connection = dataSource.getConnection();
-        } catch (IOException | SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return connection;
-    }
-
-    @Override
-    public Optional<T> find(int id) {
-        return Optional.empty();
+    public BaseMapper(IConnectionContext context) {
+        this.context = context;
     }
 
     @Override
     public void save(String query, List<Object> queryParams) {
-        try (Connection conn = getConnection();
+        try (Connection conn = context.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             // Set query parameters
@@ -61,10 +36,105 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
     }
 
     @Override
-    public List<T> all(String query, List<Object> queryParams) {
-        List<T> results = new ArrayList<T>();
+    public Optional<T> find(String query, List<Object> queryParams) {
+        try(Connection conn = context.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)) {
 
-        try(Connection conn = getConnection();
+            // Check if queryParams parameter is set
+            if (queryParams.size() >= 1) {
+                // Set query parameters
+                for (int i = 0; i < queryParams.size(); i++) {
+                    Object param = queryParams.get(i);
+                    int parameterIndex = i + 1;
+
+                    if (param != null) {
+                        switch (param.getClass().getSimpleName()) {
+                            case "Integer":
+                                stmt.setInt(parameterIndex, (Integer) param);
+                                break;
+                            case "String":
+                                stmt.setString(parameterIndex, (String) param);
+                                break;
+                            case "Boolean":
+                                stmt.setBoolean(parameterIndex, (Boolean) param);
+                                break;
+                            case "Double":
+                                stmt.setDouble(parameterIndex, (Double) param);
+                                break;
+                            // Add cases for other primitive data types as needed
+                            default:
+                                // Handle unsupported data type
+                                throw new IllegalArgumentException("Unsupported data type: " + param.getClass().getSimpleName());
+                        }
+                    } else {
+                        stmt.setNull(parameterIndex, java.sql.Types.NULL);
+                    }
+                }
+            }
+
+            // Execute the query
+            ResultSet resultSet = stmt.executeQuery();
+
+            // Process the results
+            if (resultSet.next()) {
+                T result = createInstance();
+
+                // Retrieve and set properties using reflection
+                Field[] fields = result.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);  // Allow access to private fields
+
+                    String columnName = getColumnName(field);  // Get the corresponding column name
+                    Object columnValue = resultSet.getObject(columnName);
+
+                    // Set the value into the field
+                    if (columnValue instanceof Date) {
+                        field.set(result, ((Date) columnValue).toLocalDate());
+                    } else if (columnValue instanceof Short) {
+                        field.set(result, (Short)columnValue != 0);
+                    }else{
+                        field.set(result, columnValue);
+                    }
+                }
+
+                // Retrieve declared fields of the superclass
+                Class<?> superClass = result.getClass().getSuperclass();
+                if (superClass != null) {
+                    Field[] superDeclaredFields = superClass.getDeclaredFields();
+                    for (Field field : superDeclaredFields) {
+                        field.setAccessible(true);  // Allow access to private fields
+
+                        String columnName = getColumnName(field);  // Get the corresponding column name
+                        Object columnValue = resultSet.getObject(columnName);
+
+                        // Set the value into the field and check if value is of type Date or short because Java cannot cast this to LocalDate or boolean on its own because it's a trash language.
+                        if (columnValue instanceof Date) {
+                            field.set(result, ((Date) columnValue).toLocalDate());
+                        } else if (columnValue instanceof Short) {
+                            field.set(result, (Short)columnValue != 0);
+                        }else{
+                            field.set(result, columnValue);
+                        }
+
+
+                    }
+                }
+
+                return Optional.of(result);
+            }
+
+        } catch(SQLException | ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public List<T> all(String query, List<Object> queryParams) {
+        List<T> results = new ArrayList<>();
+
+        try(Connection conn = context.getConnection();
         PreparedStatement stmt = conn.prepareStatement(query)){
 
             // Check if queryParams parameter is set
@@ -135,7 +205,7 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
                         String columnName = getColumnName(field);  // Get the corresponding column name
                         Object columnValue = resultSet.getObject(columnName);
 
-                        // Set the value into the field
+                        // Set the value into the field and check if value is of type Date or short because Java cannot cast this to LocalDate or boolean on its own because it's a trash language.
                         if (columnValue instanceof Date) {
                             field.set(result, ((Date) columnValue).toLocalDate());
                         } else if (columnValue instanceof Short) {
@@ -158,15 +228,17 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
         return results;
     }
 
-    private T createInstance() throws ReflectiveOperationException {
+
+    protected T createInstance() throws ReflectiveOperationException {
+        // Apparently all entity classes need a parameterless constructor otherwise this reflective instantiation method does not work because Java is trash.
         return (T) Class.forName(getClassName()).getDeclaredConstructor().newInstance();
     }
 
-    private String getClassName() {
+    protected String getClassName() {
         return ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0].getTypeName();
     }
 
-    private String getColumnName(Field field) {
+    protected String getColumnName(Field field) {
         // Use JavaBeans conventions to derive the column name from the field name
         String fieldName = field.getName();
         return Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);

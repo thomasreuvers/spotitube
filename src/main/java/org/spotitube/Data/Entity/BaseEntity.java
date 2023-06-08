@@ -1,7 +1,7 @@
 package org.spotitube.Data.Entity;
 
 public abstract class BaseEntity {
-    private int Id;
+    protected int Id;
 
     public int getId() {
         return Id;

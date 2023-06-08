@@ -16,6 +16,20 @@ public class Track extends BaseEntity {
 
     private boolean OfflineAvailable;
 
+    public Track(){
+    }
+
+    public Track(int id, String title, String performer, int duration, String album, int playcount, LocalDate publicationDate, String description, boolean offlineAvailable) {
+        Id = id;
+        Title = title;
+        Performer = performer;
+        Duration = duration;
+        Album = album;
+        Playcount = playcount;
+        PublicationDate = publicationDate;
+        Description = description;
+        OfflineAvailable = offlineAvailable;
+    }
 
     public String getTitle() {
         return Title;

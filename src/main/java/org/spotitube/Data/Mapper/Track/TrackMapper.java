@@ -1,15 +1,19 @@
 package org.spotitube.Data.Mapper.Track;
 
+import org.spotitube.Data.Context.IConnectionContext;
 import org.spotitube.Data.Entity.Track;
 import org.spotitube.Data.Mapper.BaseMapper;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
 public class TrackMapper extends BaseMapper<Track> implements ITrackMapper {
 
-    public TrackMapper(){
-        super();
+    @Inject
+    public TrackMapper(IConnectionContext context){
+        super(context);
     }
 
     @Override
@@ -20,8 +24,7 @@ public class TrackMapper extends BaseMapper<Track> implements ITrackMapper {
                 "FROM tracks \n" +
                 "JOIN playlistTracks ON tracks.id = playlistTracks.trackId \n" +
                 "WHERE playlistTracks.playlistId = ?";
-        List<Track> tracksInPlaylist = all(query, List.of(playlistId));
-        return tracksInPlaylist;
+        return all(query, List.of(playlistId));
     }
 
     @Override
@@ -30,7 +33,7 @@ public class TrackMapper extends BaseMapper<Track> implements ITrackMapper {
                 "FROM tracks t\n" +
                 "LEFT JOIN playlistTracks pt ON t.id = pt.trackId AND pt.playlistId = ?\n" +
                 "WHERE pt.playlistId IS NULL;";
-        return all(query, Arrays.asList(playlistId));
+        return all(query, List.of(playlistId));
     }
 
     @Override

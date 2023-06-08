@@ -1,103 +1,39 @@
 package org.spotitube.Data.Mapper.User;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.spotitube.Data.Context.IConnectionContext;
 import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.BaseMapper;
 
-import javax.enterprise.context.RequestScoped;
-import java.sql.*;
+import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-@RequestScoped
 public class UserMapper extends BaseMapper<User> implements IUserMapper {
 
-    public UserMapper() {
-        super();
+    @Inject
+    public UserMapper(IConnectionContext context) {
+        super(context);
     }
 
     @Override
-    public Optional<User> find(int id) {
-        String sql = "SELECT * FROM users WHERE id=?";
+    public User findByUsername(String username) {
+        String query = "SELECT * FROM users WHERE username=?";
 
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+        Optional<User> user = find(query, List.of(username));
 
-            User u = null;
-            if (rs.next()) {
-                u = new User(rs.getString("username"), rs.getString("password"), rs.getString("token"));
-                u.setId(rs.getInt("id"));
-            }
+        return user.orElse(null);
 
-            if (u != null){
-                return Optional.of(u);
-            } else {
-                return Optional.empty();
-            }
-
-        }catch(SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username=?";
+    public User findByToken(String token) {
+        String query = "SELECT * FROM users WHERE token=?";
 
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-                ) {
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
+        Optional<User> user = find(query, List.of(token));
 
-            User u = null;
-            if (rs.next()) {
-                u = new User(rs.getString("username"), rs.getString("password"), rs.getString("token"));
-                u.setId(rs.getInt("id"));
-            }
-
-            if (u != null && u.getUsername().contains(username)){
-                return Optional.of(u);
-            } else {
-                return Optional.empty();
-            }
-
-        }catch(SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Optional<User> findByToken(String token) {
-        String sql = "SELECT * FROM users WHERE token=?";
-
-        try(
-                Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
-            stmt.setString(1, token);
-            ResultSet rs = stmt.executeQuery();
-
-            User u = null;
-            if (rs.next()) {
-                u = new User(rs.getString("username"), rs.getString("password"), rs.getString("token"));
-                u.setId(rs.getInt("id"));
-            }
-
-            if (u != null && u.getToken().contains(token)){
-                return Optional.of(u);
-            } else {
-                return Optional.empty();
-            }
-
-        }catch(SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return user.orElse(null);
     }
 
     @Override

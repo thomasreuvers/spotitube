@@ -1,4 +1,4 @@
-package org.spotitube.Api.Resource;
+package org.spotitube.Api.Controller;
 
 import org.spotitube.Api.Annotation.RequireToken;
 import org.spotitube.Domain.Model.TracksResponse;

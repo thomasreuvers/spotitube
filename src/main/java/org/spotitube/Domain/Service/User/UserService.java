@@ -24,11 +24,11 @@ public class UserService implements IUserService {
 
     @Override
     public LoginResponse loginUser(LoginRequest model) {
-        if (!userMapper.findByUsername(model.getUser()).isPresent()) {
+        User user = userMapper.findByUsername(model.getUser());
+
+        if (user == null) {
             throw new AuthenticationException("User does not exist!");
         }
-
-        User user = userMapper.findByUsername(model.getUser()).get();
 
         if(user.getUsername().equals(model.getUser()) && DigestUtils.sha256Hex(model.getPassword()).equals(user.getPassword()))
         {

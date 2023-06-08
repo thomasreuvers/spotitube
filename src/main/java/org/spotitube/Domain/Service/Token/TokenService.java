@@ -1,5 +1,6 @@
 package org.spotitube.Domain.Service.Token;
 
+import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.User.IUserMapper;
 
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +20,7 @@ public class TokenService implements ITokenService {
 
     @Override
     public Boolean validateToken(String token) {
-        return userMapper.findByToken(token).isPresent();
+        User user = userMapper.findByToken(token);
+        return user != null;
     }
 }

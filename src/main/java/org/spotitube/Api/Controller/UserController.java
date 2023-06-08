@@ -1,4 +1,4 @@
-package org.spotitube.Api.Resource;
+package org.spotitube.Api.Controller;
 
 import org.spotitube.Domain.Exception.AuthenticationException;
 import org.spotitube.Domain.Model.LoginRequest;
