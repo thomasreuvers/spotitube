@@ -1,9 +1,7 @@
 package org.spotitube.Data.Mapper;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import org.spotitube.Data.Context.IConnectionContext;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.sql.*;
@@ -21,7 +19,6 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
      * Saves data to the database using the provided SQL query and query parameters.
      * @param query the SQL query to be executed
      * @param queryParams a list of query parameters to be set in the prepared statement
-     * @throws SQLException if an error occurs while executing the SQL query
     */
     @Override
     public void save(String query, List<Object> queryParams) {
@@ -199,11 +196,11 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
      * @return a new instance of the generic object
      * @throws ReflectiveOperationException if an error occurs during object instantiation
     */
+    @SuppressWarnings("unchecked")
     protected T createInstance() throws ReflectiveOperationException {
         // Apparently all entity classes need a parameterless constructor otherwise this reflective instantiation method does not work because Java is trash.
         return (T) Class.forName(getClassName()).getDeclaredConstructor().newInstance();
     }
-
 
     /**
      * Retrieves the name of the class associated with the generic type parameter.

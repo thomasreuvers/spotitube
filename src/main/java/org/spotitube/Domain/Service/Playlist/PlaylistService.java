@@ -8,7 +8,6 @@ import org.spotitube.Data.Mapper.Track.ITrackMapper;
 import org.spotitube.Data.Mapper.User.IUserMapper;
 import org.spotitube.Domain.Model.PlaylistResponse;
 import org.spotitube.Domain.Model.PlaylistViewModel;
-import org.spotitube.Domain.Service.Track.ITrackService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
