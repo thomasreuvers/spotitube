@@ -2,6 +2,7 @@ package org.spotitube.Domain.Service.Token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.spotitube.Spotitube;
@@ -59,15 +60,16 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Claims validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SecretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public Claims ValidateAndParseToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(SecretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException e) {
+            // Token verification failed
+            throw new SecurityException("Invalid JWT token");
+        }
     }
-//    public Boolean validateToken(String token) {
-//        User user = userMapper.findByToken(token);
-//        return user != null;
-//    }
 }

@@ -35,6 +35,7 @@ public class UserController extends BaseController {
 
     @GET
     @Path("/secured")
+    @RolesAllowed({"user", "admin"})
     public Response secured() {
         return Response.ok("test").build();
     }

@@ -6,5 +6,5 @@ public interface ITokenService {
 
     String GenerateToken(String subject, String role);
 
-    Claims validateToken(String token);
+    Claims ValidateAndParseToken(String token);
 }
