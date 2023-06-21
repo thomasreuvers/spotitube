@@ -1,8 +1,6 @@
 package org.spotitube;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.spotitube.Api.Controller.PlaylistController;
-import org.spotitube.Api.Controller.TrackController;
 import org.spotitube.Api.Controller.UserController;
 
 import javax.ws.rs.core.Application;
@@ -15,8 +13,6 @@ public class Spotitube extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(JacksonJsonProvider.class);
         classes.add(UserController.class);
-        classes.add(PlaylistController.class);
-        classes.add(TrackController.class);
         return classes;
     }
 }
