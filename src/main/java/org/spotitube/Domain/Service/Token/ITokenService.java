@@ -1,8 +1,10 @@
 package org.spotitube.Domain.Service.Token;
 
+import io.jsonwebtoken.Claims;
+
 public interface ITokenService {
 
-    String GenerateToken();
+    String GenerateToken(String subject, String role);
 
-    Boolean validateToken(String token);
+    Claims validateToken(String token);
 }

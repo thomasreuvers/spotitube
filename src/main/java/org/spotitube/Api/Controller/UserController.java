@@ -6,6 +6,7 @@ import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
 import org.spotitube.Domain.Service.User.IUserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -30,6 +31,12 @@ public class UserController extends BaseController {
                     .entity(ex.getMessage())
                     .build();
         }
+    }
+
+    @GET
+    @Path("/secured")
+    public Response secured() {
+        return Response.ok("test").build();
     }
 
     @POST

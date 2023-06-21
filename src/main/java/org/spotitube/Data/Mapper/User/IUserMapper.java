@@ -2,6 +2,7 @@ package org.spotitube.Data.Mapper.User;
 
 import org.spotitube.Data.Entity.User;
 
+
 public interface IUserMapper {
     User findByUsername(String username);
     User findByToken(String token);
