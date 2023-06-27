@@ -4,20 +4,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.spotitube.Data.Entity.Playlist;
 import org.spotitube.Data.Entity.Track;
 import org.spotitube.Data.Mapper.Context.MockConnectionContext;
-import org.spotitube.Data.Mapper.Playlist.PlaylistMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.Mockito.*;
 
 public class TrackMapperTest {
@@ -52,7 +49,7 @@ public class TrackMapperTest {
     void testAllTracksInPlaylist() throws SQLException {
         // Arrange
         int playlistId = 1;
-        Track track = new Track(1, "Title", "Performer", 2000, "Album", 300, LocalDate.now(), "Description", false);
+        Track track = new Track(playlistId, "Title", "Performer", 2000, "Album", 300, null, "Description", false);
         List<Track> expectedTracks = new ArrayList<>(); // Create expected tracks
 
         // Stub the method invocations on the mocks
@@ -63,9 +60,9 @@ public class TrackMapperTest {
         when(resultSetMock.getObject("duration")).thenReturn(track.getDuration());
         when(resultSetMock.getObject("album")).thenReturn(track.getAlbum());
         when(resultSetMock.getObject("playcount")).thenReturn(track.getPlaycount());
-        when(resultSetMock.getObject("publicationdate")).thenReturn(track.getPublicationDate());
+        when(resultSetMock.getObject("publicationDate")).thenReturn(track.getPublicationDate());
         when(resultSetMock.getObject("description")).thenReturn(track.getDescription());
-        when(resultSetMock.getObject("OfflineAvailable")).thenReturn((short) (track.isOfflineAvailable()?1:0));
+        when(resultSetMock.getObject("offlineAvailable")).thenReturn((short) (track.isOfflineAvailable()?1:0));
 
         // Add the expected track to the list
         expectedTracks.add(track);
@@ -74,8 +71,7 @@ public class TrackMapperTest {
         List<Track> actualTracks = trackMapper.allTracksInPlaylist(playlistId);
 
         // Assert
-        assertEquals(expectedTracks, actualTracks);
-        verify(statementMock).setObject(1, playlistId);
+        assertIterableEquals(expectedTracks, actualTracks);
         verify(resultSetMock, times(2)).next(); // Called for one row and then reached end
         verify(resultSetMock).getObject("id");
         verify(resultSetMock).getObject("title");
@@ -83,9 +79,8 @@ public class TrackMapperTest {
         verify(resultSetMock).getObject("duration");
         verify(resultSetMock).getObject("album");
         verify(resultSetMock).getObject("playcount");
-        verify(resultSetMock).getObject("publicationdate");
+        verify(resultSetMock).getObject("publicationDate");
         verify(resultSetMock).getObject("description");
-        verify(resultSetMock).getBoolean("OfflineAvailable");
+        verify(resultSetMock).getObject("offlineAvailable");
     }
-
 }

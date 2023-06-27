@@ -1,14 +1,11 @@
 package org.spotitube.Data.Mapper.Playlist;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.spotitube.Data.Entity.Playlist;
-import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.Context.MockConnectionContext;
-import org.spotitube.Data.Mapper.User.UserMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

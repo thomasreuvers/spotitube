@@ -1,6 +1,7 @@
 package org.spotitube.Data.Entity;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Track extends BaseEntity {
     private String Title;
@@ -93,5 +94,13 @@ public class Track extends BaseEntity {
 
     public void setOfflineAvailable(boolean offlineAvailable) {
         OfflineAvailable = offlineAvailable;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Track track = (Track) o;
+        return getDuration() == track.getDuration() && getPlaycount() == track.getPlaycount() && isOfflineAvailable() == track.isOfflineAvailable() && Objects.equals(getTitle(), track.getTitle()) && Objects.equals(getPerformer(), track.getPerformer()) && Objects.equals(getAlbum(), track.getAlbum()) && Objects.equals(getPublicationDate(), track.getPublicationDate()) && Objects.equals(getDescription(), track.getDescription());
     }
 }

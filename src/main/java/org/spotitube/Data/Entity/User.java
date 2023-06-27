@@ -1,5 +1,7 @@
 package org.spotitube.Data.Entity;
 
+import java.util.Objects;
+
 public class User extends BaseEntity {
     private String Username;
     private String Password;
@@ -48,5 +50,13 @@ public class User extends BaseEntity {
 
     public void setToken(String token) {
         Token = token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getToken(), user.getToken());
     }
 }
