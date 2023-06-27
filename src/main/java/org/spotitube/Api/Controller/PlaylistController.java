@@ -24,101 +24,59 @@ public class PlaylistController extends BaseController {
     @GET
     @RequireToken
     public Response GetPlaylists(@QueryParam("token") String token) {
-        try {
-            PlaylistResponse response = playlistService.allPlaylists(token);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        PlaylistResponse response = playlistService.allPlaylists(token);
+        return Response.ok(response).build();
     }
 
     @POST
     @RequireToken
     public Response AddNewPlaylist(@QueryParam("token") String token, Playlist playlist) {
-        try {
-            playlistService.addPlaylist(playlist, token);
-            PlaylistResponse response = playlistService.allPlaylists(token);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        playlistService.addPlaylist(playlist, token);
+        PlaylistResponse response = playlistService.allPlaylists(token);
+        return Response.ok(response).build();
     }
 
     @PUT
     @Path("{id}")
     @RequireToken
     public Response EditPlaylist(@PathParam("id") int id, @QueryParam("token") String token, Playlist playlist) {
-        try {
-            playlistService.updatePlaylist(id, playlist);
-            PlaylistResponse response = playlistService.allPlaylists(token);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        playlistService.updatePlaylist(id, playlist);
+        PlaylistResponse response = playlistService.allPlaylists(token);
+        return Response.ok(response).build();
     }
 
     @DELETE
     @Path("{id}")
     @RequireToken
     public Response DeletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
-        try{
-            playlistService.deletePlaylist(id);
-            PlaylistResponse response = playlistService.allPlaylists(token);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        playlistService.deletePlaylist(id);
+        PlaylistResponse response = playlistService.allPlaylists(token);
+        return Response.ok(response).build();
     }
 
     @GET
     @Path("{id}/tracks")
     @RequireToken
     public Response getPlaylistTracks(@PathParam("id") int id, @QueryParam("token") String token) {
-        try{
-            TracksResponse response = trackService.allTracksInPlaylist(id);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        TracksResponse response = trackService.allTracksInPlaylist(id);
+        return Response.ok(response).build();
     }
 
     @POST
     @Path("{id}/tracks")
     @RequireToken
     public Response addTrackToPlaylist(@PathParam("id") int id, Track track, @QueryParam("token") String token) {
-        try{
-            trackService.addToPlaylist(track, id);
-            TracksResponse response = trackService.allTracksInPlaylist(id);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        trackService.addToPlaylist(track, id);
+        TracksResponse response = trackService.allTracksInPlaylist(id);
+        return Response.ok(response).build();
     }
 
     @DELETE
     @Path("{id}/tracks/{trackId}")
     @RequireToken
     public Response deleteTrackFromPlaylist(@PathParam("id") int id, @PathParam("trackId")int trackId, @QueryParam("token") String token) {
-        try{
-            trackService.deleteFromPlaylist(id, trackId);
-            TracksResponse response = trackService.allTracksInPlaylist(id);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        trackService.deleteFromPlaylist(id, trackId);
+        TracksResponse response = trackService.allTracksInPlaylist(id);
+        return Response.ok(response).build();
     }
 }

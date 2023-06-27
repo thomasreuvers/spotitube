@@ -1,6 +1,7 @@
 package org.spotitube.Data.Context;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import org.spotitube.Domain.Exception.CustomException;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class ConnectionContext implements IConnectionContext {
 
             return dataSource.getConnection();
         } catch (IOException | SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 }

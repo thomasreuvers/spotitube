@@ -1,8 +1,10 @@
 package org.spotitube.Data.Mapper;
 
 import org.spotitube.Data.Context.IConnectionContext;
+import org.spotitube.Domain.Exception.CustomException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.sql.*;
 import java.sql.Date;
@@ -156,7 +158,7 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
             }
 
         } catch(SQLException | ReflectiveOperationException e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
 
         return Optional.empty();
@@ -185,7 +187,7 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
             }
 
         } catch(SQLException | ReflectiveOperationException e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
 
         return results;
@@ -196,10 +198,14 @@ public abstract class BaseMapper<T> implements IBaseMapper<T> {
      * @return a new instance of the generic object
      * @throws ReflectiveOperationException if an error occurs during object instantiation
     */
-    @SuppressWarnings("unchecked")
-    protected T createInstance() throws ReflectiveOperationException {
+    protected T createInstance() {
         // Apparently all entity classes need a parameterless constructor otherwise this reflective instantiation method does not work because Java is trash.
-        return (T) Class.forName(getClassName()).getDeclaredConstructor().newInstance();
+        try {
+            return (T) Class.forName(getClassName()).getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException |
+                 ClassNotFoundException e) {
+            throw new CustomException(e);
+        }
     }
 
     /**

@@ -16,13 +16,7 @@ public class TrackController extends BaseController {
     @GET
     @RequireToken
     public Response getAvailableTracks(@QueryParam("forPlaylist") int forPlaylist, @QueryParam("token") String token) {
-        try{
-            TracksResponse response = trackService.allAvailableTracks(forPlaylist);
-            return Response.ok(response).build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        TracksResponse response = trackService.allAvailableTracks(forPlaylist);
+        return Response.ok(response).build();
     }
 }

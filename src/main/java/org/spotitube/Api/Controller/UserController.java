@@ -18,30 +18,14 @@ public class UserController extends BaseController {
     @POST
     @Path("/login")
     public Response login(LoginRequest model) {
-        try {
-            LoginResponse user = IUserService.loginUser(model);
-            return Response.ok(user).build();
-        }catch(AuthenticationException ex){
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(ex.getMessage())
-                    .build();
-        }catch(Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ex.getMessage())
-                    .build();
-        }
+        LoginResponse user = IUserService.loginUser(model);
+        return Response.ok(user).build();
     }
 
     @POST
     @Path("/register")
     public Response register(RegisterModel model) {
-        try {
-            IUserService.registerUser(model);
-        }catch(Exception ex) {
-            return Response.status(
-                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()
-            ).build();
-        }
+        IUserService.registerUser(model);
         return Response.ok().build();
     }
 

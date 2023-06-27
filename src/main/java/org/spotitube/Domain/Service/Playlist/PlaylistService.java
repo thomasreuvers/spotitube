@@ -6,6 +6,7 @@ import org.spotitube.Data.Entity.User;
 import org.spotitube.Data.Mapper.Playlist.IPlaylistMapper;
 import org.spotitube.Data.Mapper.Track.ITrackMapper;
 import org.spotitube.Data.Mapper.User.IUserMapper;
+import org.spotitube.Domain.Exception.CustomException;
 import org.spotitube.Domain.Model.PlaylistResponse;
 import org.spotitube.Domain.Model.PlaylistViewModel;
 
@@ -72,7 +73,7 @@ public class PlaylistService implements IPlaylistService {
         User user = userMapper.findByToken(token);
 
         if (user == null) {
-            throw new RuntimeException("User does with given token does not exist!");
+            throw new CustomException("User with given token does not exist!");
         }
 
         playlistMapper.newPlaylist(playlist, user.getId());
