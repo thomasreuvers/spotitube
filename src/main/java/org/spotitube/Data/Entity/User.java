@@ -6,6 +6,7 @@ public class User extends BaseEntity {
     private String Username;
     private String Password;
     private String Token;
+    private String Role;
 
     public User(){
     }
@@ -50,6 +51,13 @@ public class User extends BaseEntity {
 
     public void setToken(String token) {
         Token = token;
+    }
+    public String getRole() {
+        return Role;
+    }
+
+    public void setRole(String role) {
+        Role = role;
     }
 
     @Override

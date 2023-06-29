@@ -19,7 +19,7 @@ public class UserService implements IUserService {
     private IUserMapper userMapper;
 
     @Inject
-    private ITokenService ITokenService;
+    private ITokenService TokenService;
 
 
     @Override
@@ -33,7 +33,7 @@ public class UserService implements IUserService {
         if(user.getUsername().equals(model.getUser()) && DigestUtils.sha256Hex(model.getPassword()).equals(user.getPassword()))
         {
             // Generate token
-            String token = ITokenService.GenerateToken();
+            String token = TokenService.GenerateToken(user.getUsername(), user.getRole());
 
             // Update user in db with new token
             userMapper.updateToken(user.getId(), token);

@@ -46,7 +46,6 @@ class PlaylistServiceTest {
     @Test
     void allPlaylists() {
         // Red: Write a failing test case
-        String token = "abc123";
         List<Playlist> playlists = Arrays.asList(
                 new Playlist(1, "Playlist 1", 1),
                 new Playlist(2, "Playlist 2", 2)
@@ -60,8 +59,8 @@ class PlaylistServiceTest {
         Mockito.when(trackMapper.allTracksInPlaylist(1)).thenReturn(tracks);
         Mockito.when(trackMapper.allTracksInPlaylist(2)).thenReturn(new ArrayList<>());
 
-        User user = new User(1,"John Doe", "test123", token);
-        Mockito.when(userMapper.findByToken(token)).thenReturn(user);
+        User user = new User(1,"John Doe", "test123", "");
+        Mockito.when(userMapper.findByUserId(user.getId())).thenReturn(user);
 
         PlaylistResponse expectedResponse = new PlaylistResponse(
                 Arrays.asList(
@@ -72,7 +71,7 @@ class PlaylistServiceTest {
         );
 
         // Green: Write the minimum amount of code to make the test pass
-        PlaylistResponse result = playlistService.allPlaylists(token);
+        PlaylistResponse result = playlistService.allPlaylists(user.getId());
 
         // Assertions
         Assertions.assertEquals(expectedResponse.getPlaylists().size(), result.getPlaylists().size());
@@ -102,13 +101,12 @@ class PlaylistServiceTest {
     void addPlaylist() {
         // Red: Write a failing test case
         Playlist playlist = new Playlist(1, "New Playlist", 1);
-        String token = "abc123";
 
-        User user = new User(1, "John Doe", "test123", token);
-        Mockito.when(userMapper.findByToken(token)).thenReturn(user);
+        User user = new User(1, "John", "Doe", "test123");
+        Mockito.when(userMapper.findByUserId(user.getId())).thenReturn(user);
 
         // Green: Write the minimum amount of code to make the test pass
-        playlistService.addPlaylist(playlist, token);
+        playlistService.addPlaylist(playlist, user.getId());
 
         // Assertions
         Mockito.verify(playlistMapper).newPlaylist(playlist, user.getId());

@@ -1,13 +1,13 @@
 package org.spotitube.Api.Controller;
 
-import org.spotitube.Domain.Exception.AuthenticationException;
 import org.spotitube.Domain.Model.LoginRequest;
 import org.spotitube.Domain.Model.LoginResponse;
 import org.spotitube.Domain.Model.RegisterModel;
 import org.spotitube.Domain.Service.User.IUserService;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 public class UserController extends BaseController {

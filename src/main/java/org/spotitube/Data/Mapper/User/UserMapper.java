@@ -18,13 +18,19 @@ public class UserMapper extends BaseMapper<User> implements IUserMapper {
     }
 
     @Override
+    public User findByUserId(int userId) {
+        String query = "SELECT * FROM users WHERE id=?";
+        Optional<User> user = find(query, List.of(userId));
+        return user.orElse(null);
+    }
+
+    @Override
     public User findByUsername(String username) {
         String query = "SELECT * FROM users WHERE username=?";
 
         Optional<User> user = find(query, List.of(username));
 
         return user.orElse(null);
-
     }
 
     @Override

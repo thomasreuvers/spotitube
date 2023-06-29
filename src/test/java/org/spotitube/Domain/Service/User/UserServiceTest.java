@@ -42,7 +42,7 @@ class UserServiceTest {
         User user = new User("username", DigestUtils.sha256Hex(unHashedPassword));
 
         Mockito.when(userMapper.findByUsername(model.getUser())).thenReturn(user);
-        Mockito.when(tokenService.GenerateToken()).thenReturn(expectedToken);
+        Mockito.when(tokenService.GenerateToken(user.getUsername(), user.getRole())).thenReturn(expectedToken);
 
         // Green: Write the minimum amount of code to make the test pass
         LoginResponse response = userService.loginUser(model);

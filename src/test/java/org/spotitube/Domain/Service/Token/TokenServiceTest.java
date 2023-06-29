@@ -1,5 +1,6 @@
 package org.spotitube.Domain.Service.Token;
 
+import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class TokenServiceTest {
     @Test
     public void testGenerateToken() {
         // Red: Write a failing test case
-        String token = tokenService.GenerateToken();
+        String token = tokenService.GenerateToken("Test", "admin");
 
         // Green: Write the minimum amount of code to make the test pass
         Assertions.assertNotNull(token);
@@ -55,9 +56,6 @@ class TokenServiceTest {
         Mockito.when(userMapper.findByToken(token)).thenReturn(null);
 
         // Green: Write the minimum amount of code to make the test pass
-        boolean result = tokenService.validateToken(token);
-
-        // Assertions
-        Assertions.assertFalse(result);
+        assertThrows(JwtException.class, () -> tokenService.ValidateAndParseToken(token));
     }
 }

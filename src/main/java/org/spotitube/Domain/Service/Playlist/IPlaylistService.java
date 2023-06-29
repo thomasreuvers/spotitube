@@ -5,11 +5,11 @@ import org.spotitube.Domain.Model.PlaylistResponse;
 
 public interface IPlaylistService {
 
-    PlaylistResponse allPlaylists(String token);
+    PlaylistResponse allPlaylists(int userId);
 
     void deletePlaylist(int playlistId);
 
-    void addPlaylist(Playlist playlist, String token);
+    void addPlaylist(Playlist playlist, int userId);
 
     void updatePlaylist(int id, Playlist playlist);
 }

@@ -29,11 +29,11 @@ public class PlaylistService implements IPlaylistService {
 
     /**
      * Retrieves all playlists and their details.
-     * @param token The authentication token of the logged-in user.
+     * @param userId The userId of the logged-in user.
      * @return A {@link PlaylistResponse} object containing a list of {@link PlaylistViewModel} objects and the total play time.
      */
     @Override
-    public PlaylistResponse allPlaylists(String token) {
+    public PlaylistResponse allPlaylists(int userId) {
         List<Playlist> AllPlaylists = playlistMapper.allPlaylists();
 
         List<PlaylistViewModel> playlistViewModels = new ArrayList<>();
@@ -47,7 +47,7 @@ public class PlaylistService implements IPlaylistService {
             List<Track> tracks = trackMapper.allTracksInPlaylist(playlist.getId());
             playlistViewModel.setTracks(tracks);
 
-            User user = userMapper.findByToken(token);
+            User user = userMapper.findByUserId(userId);
             // Check if current logged-in user is the owner of the playlist
             if(user != null) {
                 playlistViewModel.setOwner(user.getId() == playlist.getUserId());
@@ -69,8 +69,8 @@ public class PlaylistService implements IPlaylistService {
     }
 
     @Override
-    public void addPlaylist(Playlist playlist, String token) {
-        User user = userMapper.findByToken(token);
+    public void addPlaylist(Playlist playlist, int userId) {
+        User user = userMapper.findByUserId(userId);
 
         if (user == null) {
             throw new CustomException("User with given token does not exist!");
